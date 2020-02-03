@@ -1,0 +1,4 @@
+URL: https://movement.uber.com/cities?lang=en-US
+
+The data represents Uber trips taken at various cities where Uber Movement is available. The data can be further filtered by days of the week, months, and the time of day. Other important and interesting attributes include the travel time, origin zone, and destination zone. Getting insights into specific zones of a city allow one to analyze where there is a higher or lower demand for Ubers with further analysis revealing why.
+
