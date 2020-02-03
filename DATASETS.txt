@@ -1,7 +1,7 @@
-URL: https://movement.uber.com/cities?lang=en-US
+URL: https://movement.uber.com/cities?lang=en-US The data represents Uber trips taken at various cities where Uber Movement is available. The data can be further filtered by days of the week, months, and the time of day. Other important and interesting attributes include the travel time, origin zone, and destination zone. Getting insights into specific zones of a city allow one to analyze where there is a higher or lower demand for Ubers with further analysis revealing why. 
 
-The data represents Uber trips taken at various cities where Uber Movement is available. 
-The data can be further filtered by days of the week, months, and the time of day. 
-Other important and interesting attributes include the travel time, origin zone, and destination zone. 
-Getting insights into specific zones of a city allow one to analyze where there is a higher or lower 
-demand for Ubers with further analysis revealing why.
+All files will be similar to what's depicted below. However, we will filter the data using the fields described above to get different and more interesting data depending on our application. 
+
+Origin Movement ID	Origin Display Name	Destination Movement ID	Destination Display Name	Date Range	Mean Travel Time (Seconds)	Range - Lower Bound Travel Time (Seconds)	Range - Upper Bound Travel Time (Seconds) 
+
+1116	Harborwalk, Waterfront, Boston	3	0 Flaherty Way, D Street / West Broadway, Boston	9/1/2019 - 9/30/2019, Every day, Daily Average	586	378	907 1116	Harborwalk, Waterfront, Boston	4	0 Moulton Street, Lynn	9/1/2019 - 9/30/2019, Every day, Daily Average	1572	1049	2353 1116	Harborwalk, Waterfront, Boston	5	0 Queensberry Street, Fenway/Kenmore, Boston	9/1/2019 - 9/30/2019, Every day, Daily Average	713	465	1093 1116	Harborwalk, Waterfront, Boston	9	0 North Main Street, Brockton	9/1/2019 - 9/30/2019, Every day, Daily Average	2224	1608	3074 1116	Harborwalk, Waterfront, Boston	13	200 Liberty Street, Braintree	9/1/2019 - 9/30/2019, Every day, Daily Average	1292	907	1838
