@@ -1,28 +1,51 @@
-Our dataset is called uber_staging. It was taken from the following URL.
-URL: https://movement.uber.com/cities?lang=en-US
+Our dataset consists of instacart data from 2017. It was taken from the following URL.
+URL: https://www.instacart.com/datasets/grocery-shopping-2017
 
-The data represents Uber trips taken at various cities where Uber Movement is 
-available. The data can be further filtered by days of the week, months, and the time of day. Other important and interesting
-attributes include the travel time, origin zone, and destination zone. Getting insights into specific zones of a city allow
-one to analyze where there is a higher or lower demand for Ubers with further analysis revealing why. 
+It contains the following 5 tables: orders, products, aisles, departments, and order_products_SET, where SET is a 'prior' evaluation set or 'train' set.
 
-These are the files that we used to make the dataset:
-	travel_times_LA_2018_quarter1.csv	
- 	travel_times_LA_2018_quarter3.csv		
- 	travel_times_LA_2019_quarter1.csv		
- 	travel_times_LA_2019_quarter3.csv
-The dataset is composed of these tables:
-	Quarter1_2018
-	Quarter1_2019
-	Quarter3_2018
-	Quarter3_2019
-These are their attributes:
-sourceid	INTEGER	NULLABLE	
-dstid	INTEGER	NULLABLE	
-month	INTEGER	NULLABLE	
-mean_travel_time	FLOAT	NULLABLE	
-standard_deviation_travel_time	FLOAT	NULLABLE	
-geometric_mean_travel_time	FLOAT	NULLABLE	
-geometric_standard_deviation_travel_time	FLOAT	NULLABLE	
+Relationships between tables can be formed via the products and departments/aisles tables as each product belongs to a certain department or aisle. These products then form a relationship with whatever customer decided to add it to their order. The evaluation set tables also contain the frequency at which each customer buys a certain product
 
-Relationships between tables can be formed via the source and final destination zones. Various final destinations can become source destinations and vice versa.
+Insights into each table are given below and found at the following link: 
+Link: https://gist.github.com/jeremystan/c3b39d947d9b88b3ccff3147dbcf6c6b
+
+"__Orders (3.4m rows, 206k users):
+
+order_id: order identifier
+user_id: customer identifier
+eval_set: which evaluation set this order belongs in (see SET described below)
+order_number: the order sequence number for this user (1 = first, n = nth)
+order_dow: the day of the week the order was placed on
+order_hour_of_day: the hour of the day the order was placed on
+days_since_prior: days since the last order, capped at 30 (with NAs for order_number = 1)
+
+
+__Products (50k rows):
+
+product_id: product identifier
+product_name: name of the product
+aisle_id: foreign key
+department_id: foreign key
+
+
+__Aisles (134 rows):
+
+aisle_id: aisle identifier
+aisle: the name of the aisle
+
+
+__Deptartments (21 rows):
+
+department_id: department identifier
+department: the name of the department
+
+
+__Order_products__SET (30m+ rows):
+
+order_id: foreign key
+product_id: foreign key
+add_to_cart_order: order in which each product was added to cart
+reordered: 1 if this product has been ordered by this user in the past, 0 otherwise
+where SET is one of the four following evaluation sets (eval_set in orders):
+
+"prior": orders prior to that users most recent order (~3.2m orders)
+"train": training data supplied to participants (~131k orders)"
