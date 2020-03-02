@@ -7,7 +7,6 @@ class FormatDOWFn(beam.DoFn):
   def process(self, element):
     # get necessary fields from record
     order_record = element
-    order_id = order_record.get('order_id')
     order_dow = order_record.get('order_dow')
     print('current dow: ' + str(order_dow))
 
@@ -40,7 +39,7 @@ def run():
      # Create beam pipeline using local runner
      p = beam.Pipeline('DirectRunner', options=opts)
 
-     sql = 'SELECT order_id, user_id, order_number, order_dow, order_hour_of_day, days_since_prior_order FROM instacart_modeled.Orders limit 100'
+     sql = 'SELECT * FROM instacart_modeled.Orders limit 100'
      bq_source = beam.io.BigQuerySource(query=sql, use_standard_sql=True)
     
      query_results = p | 'Read from BigQuery' >> beam.io.Read(bq_source)
