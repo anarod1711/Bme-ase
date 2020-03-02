@@ -1,20 +1,31 @@
-All tables have appropriate data types representative of the data in each attribute. Therefore, no casting was done.
-
+(KEY: --[TABLE NAME]--)
 The modeling focuses on:
+* converting some attribute data types to appropriate data type (Orders
 * dropping attributes that don't yield useful data for our purpse (Orders)
 * joining tables with the same attributes (Order_Products_Prior and Order_Products_Train)
 * adding primary keys to all tables (Order_Products_Prior, Order_Products_Train)
 
 
 DROPPING COLUMNS
-Alterations to 'Orders' table
+--Orders--
 * The eval_set attribute is no longer needed because the two evaluation set tables have been merged.
-* The days_since_prior_order attribute is not needed because it only contains nulls and floats, which are not useful for our analysis
 
+CASTING TO APPROPRIATE TYPES
+--Orders--
+* The days_since_prior_order column is currently a float. It contains only integers and 'null' when order_number = 1, meaning days_since_prior_order is not applicable (NA). This column will be better represented by integers.
 
 JOINING TABLES (UNION)
-The Order_Products_Prior and Order_Products_Train tables have the same attributes. After checking documentation on the dataset, we found that merging these two tables without accounting which evaluation set each record was taken from would fit best for our purposes. 
+--Order_Products_Prior and Order_Products_Train--
+* These tables have the same attributes. After checking documentation on the dataset, we found that merging these two tables without accounting which evaluation set each record was taken from would fit best for our purposes. 
 
 
 PRIMARY KEYS
-All tables in our dataset had valid primary keys with the exception of the Order_Products_Prior and Order_Products_Train tables, which are now merged into 'Order_Products' table. The queries written show that making a composite key out of order_id and product_id is valid in the newly merged table.
+--Order_Products--
+* All tables in our dataset had valid primary keys with the exception of the Order_Products_Prior and Order_Products_Train tables, which are now merged into 'Order_Products' table. The queries written show that making a composite key out of order_id and product_id is valid in the newly merged table.
+
+
+NOT NEEDED but TO PRACTICE TRANSFORMS 
+--ORDERS--
+* change integers in "order_dow" to match the literal day of the week (type: string)
+* change integers in "order_hour_of_day" from military to normal am/pm time (type: string)
+* add hours elapsed from last order instead of "days_since_prior_order" (type:float)
