@@ -24,8 +24,12 @@ PRIMARY KEYS
 * All tables in our dataset had valid primary keys with the exception of the Order_Products_Prior and Order_Products_Train tables, which are now merged into 'Order_Products' table. The queries written show that making a composite key out of order_id and product_id is valid in the newly merged table.
 
 
+USEFUL TRANSFORMS
+--Order_Products--
+* aggregating ‘add_to_cart_order' of each product and how many orders include this product (creates new table)
+
 NOT NEEDED but TO PRACTICE TRANSFORMS 
---ORDERS--
+--Orders--
 * change integers in "order_dow" to match the literal day of the week (type: string)
 * change integers in "order_hour_of_day" from military to normal am/pm time (type: string)
 * add hours elapsed from last order instead of "days_since_prior_order" (type:float)
