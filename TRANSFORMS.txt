@@ -31,5 +31,3 @@ USEFUL TRANSFORMS
 NOT NEEDED but TO PRACTICE TRANSFORMS 
 --Orders--
 * change integers in "order_dow" to match the literal day of the week (type: string)
-* change integers in "order_hour_of_day" from military to normal am/pm time (type: string)
-* add hours elapsed from last order instead of "days_since_prior_order" (type:float)
