@@ -46,7 +46,7 @@ def run():
     # staging location, temp_location and specify DataflowRunner.
     google_cloud_options = options.view_as(GoogleCloudOptions)
     google_cloud_options.project = PROJECT_ID
-    google_cloud_options.job_name = 'orders-df2'
+    google_cloud_options.job_name = 'orders-df1'
     google_cloud_options.staging_location = BUCKET + '/staging'
     google_cloud_options.temp_location = BUCKET + '/temp'
     options.view_as(StandardOptions).runner = 'DataflowRunner'
@@ -65,7 +65,7 @@ def run():
     orders_that_include_pcoll = query_results | 'Count Orders' >> beam.ParDo(OrdersThatIncludeFn())
         
      # write PCollection to output file
-    orders_that_include_pcoll | 'Write to output.txt' >> WriteToText('output.txt')
+    orders_that_include_pcoll | 'Write to output.txt' >> WriteToText(DIR_PATH + 'output.txt')
         
      # group orders by product number
     grouped_orders_pcoll =  orders_that_include_pcoll | 'Group by product_id' >> beam.GroupByKey()

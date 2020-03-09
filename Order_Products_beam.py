@@ -47,7 +47,7 @@ def run():
     # Create beam pipeline using local runner
     p = beam.Pipeline('DirectRunner', options=opts)
         
-    sql = 'SELECT product_id, add_to_cart_order as total FROM instacart_modeled.Order_Products'    
+    sql = 'SELECT product_id, add_to_cart_order as total FROM instacart_modeled.Order_Products limit 100'    
     bq_source = beam.io.BigQuerySource(query=sql, use_standard_sql=True)
 
     query_results = p | 'Read from BigQuery' >> beam.io.Read(bq_source)
