@@ -59,14 +59,14 @@ Our dataset consists of Quarterly Food-at-Home Price Database 2 (QFAHPD2) data b
 
 URL: https://www.ers.usda.gov/data-products/quarterly-food-at-home-price-database/quarterly-food-at-home-price-database/#Quarterly%20Food-at-Home%20Price%20Database-1%20(QFAHPD-1)
 
-This dataset contains information about quarterly market-level prices for different food groups between the years 2004-2010. These food groups include Universal Product Code (UPC) foods, such as packaged and canned food, and random-weight (non-UPC) foods. The prices are traced back to different metropolitan markets and nonmetropolitan areas from household-level purchases. The household-level purchases' food prices were aggregated and used to estimate the market-level prices.
+This dataset contains information about quarterly market-level prices for different food groups between the years 2004-2010. These food groups include Universal Product Code (UPC) foods, such as packaged and canned food, and random-weight (non-UPC) foods. The prices are traced back to different metropolitan markets and nonmetropolitan areas from household-level purchases. The household-level purchases' food prices were aggregated and used to estimate the market-level prices. Geographical data is available to trace the markets to specific USA regions and divisions.
 
 We want to analyze this data to be able to predict food prices for the year 2017 based on the data from 2004-2010. Then, we will map the food products in this dataset to the products in our primary dataset. After this, we should have Instacart data with prices for each product bought in each order. We can further analyze this data by looking at trends in user spending, such as how much was spent in one of the user's order vs another, or order price total per day of week, etc.
 
 Information about each table is provided below:
 KEY: __TABLE_NAME
 
-__State_Codes (51 rows): DROP
+__State_Codes (51 rows): *DROP*
 state_code: INTEGER	
 state_abbreviation: STRING
 
@@ -76,7 +76,18 @@ Row	State_Code	State_Abbreviation
 2	2	AK
 3	4	AZ
 
-__Geo_Divisions (9 rows): DROP
+__FIPS_Market_Group (40380 rows): *DROP*
+FIPS: INTEGER	
+MARKETGROUP26: INTEGER
+
+EX data:
+Row	FIPS	MARKETGROUP26	
+1	null	null
+2	null	null
+3	null	null
+
+
+__Geo_Divisions (9 rows):
 division_id: INTEGER	
 division_name: STRING
 
@@ -87,26 +98,17 @@ Row	division_id	division_name
 3	3	East North Central
 
 
-__Geo_Regions (4 rows): DROP
+__Geo_Regions (4 rows):
 region_id: INTEGER	
 region_name: STRING	
 
 EX data:
-
-__Geo_Region_Division (35 rows): DROP
-string_field_0: STRING	
-string_field_1: STRING	
-string_field_2: STRING		
-string_field_3: STRING	
-
-EX data:
-Row	string_field_0	string_field_1	string_field_2	string_field_3	
-1	null	null	Boston	Boston
-2	null	null	Nonmetro New England	n/a
-3	null	null	Western NY/PA 	Pittsburg, Buffalo, Albany, Syracuse
+1	1	East
+2	2	Central
+3	3	South
 
 
-__Market_Group_Region_Division (35 rows): DROP
+__Geo_Market_Group (35 rows):
 Marketgroup: INTEGER	
 Region: INTEGER	
 Division: INTEGER
@@ -118,15 +120,19 @@ Row	Marketgroup	Region	Division
 3	91	1	1
 
 
-__FIPS_Market_Group (40380 rows): DROP
-FIPS: INTEGER	
-MARKETGROUP26: INTEGER
+__Geo_Master (35 rows):
+string_field_0: STRING	
+string_field_1: STRING	
+string_field_2: STRING		
+string_field_3: STRING	
 
 EX data:
-Row	FIPS	MARKETGROUP26	
-1	null	null
-2	null	null
-3	null	null
+Row	string_field_0	string_field_1	string_field_2	string_field_3	
+1	East	New England 	Hartford	Hartford
+2	East	New England 	Boston	Boston
+3	East	New England 	Nonmetro New England	n/a
+4	
+
 
 __Food_Categories (4 rows):
 category_id: INTEGER	
