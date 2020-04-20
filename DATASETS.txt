@@ -87,6 +87,17 @@ Row	FIPS	MARKETGROUP26
 3	null	null
 
 
+__Market_Groups (39 rows):
+market_id: INTEGER	
+market_name: STRING
+
+EX data:
+Row	market_id	market_name
+1	1	Hartford
+2	2	Urban NY
+3	3	Western NY/PA 	
+
+
 __Geo_Divisions (9 rows):
 division_id: INTEGER	
 division_name: STRING

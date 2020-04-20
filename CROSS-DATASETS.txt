@@ -1,0 +1,28 @@
+------FILE DESCRIPTION----
+Think of 3 queries that span dataset1 and dataset2.
+* Should use a union or filter to combine
+
+(1-2 sentences)
+* describe expected results
+* describe SQL operations needed
+
+(1-2 sentences)
+* describe data transforms needed to implement
+-------------------------------------------------
+
+--------------QUERY 1--------------
+__results: This query will show the total amount spent for each Instacart order.
+__SQL: It will use the SUM() function on the cost of all products bought for any given order, which means a GROUP BY will probably be needed. 
+We will be doing an INNER JOIN ON product_id from dataset1 and food_id from dataset2.
+__Transforms: We will need to map each product_id in dataset1 to food_id in dataset2. We will need to estimate the 2017 food_id cost by averaging the cost for that food_id over the 2004-2010 years. 
+
+
+--------------QUERY 2--------------
+__results: This query will show product prices per region and how its sale was affected. For example, what happens if a banana costs more in another region/division? Will the frequency of it getting bought decrease? Probably.
+__SQL: We will probably need to take the difference between food prices across all regions/divisions or market groups and analyze the foods with the biggest price difference (Apache?). We will also have to look at the Instacart frequency of sale for a product_id across the regions with the maximum price difference (Apache?). This can probably be done in SQL using the COUNT(1) and SUM() function, or it can also be done in apache beam (we did something similar for dataset 2). We can then do an INNER JOIN ON the product and food id, to see if sales fluctuated. 
+--Transforms:We will need to map each product_id in dataset1 to food_id in dataset2. We will need to estimate the 2017 food_id cost by averaging the cost for that food_id over the 2004-2010 years. The sentences in the __SQL section with "Apache?" are data manipulation that might be better off doing in Apache rather than SQL.
+
+--------------QUERY 3--------------
+__results: 
+__SQL:
+--Transforms:
