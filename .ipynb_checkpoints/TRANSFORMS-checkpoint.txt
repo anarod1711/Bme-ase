@@ -1,0 +1,33 @@
+(KEY: --[TABLE NAME]--)
+The modeling focuses on:
+* converting some attribute data types to appropriate data type (Orders
+* dropping attributes that don't yield useful data for our purpse (Orders)
+* joining tables with the same attributes (Order_Products_Prior and Order_Products_Train)
+* adding primary keys to all tables (Order_Products_Prior, Order_Products_Train)
+
+
+DROPPING COLUMNS
+--Orders--
+* The eval_set attribute is no longer needed because the two evaluation set tables have been merged.
+
+CASTING TO APPROPRIATE TYPES
+--Orders--
+* The days_since_prior_order column is currently a float. It contains only integers and 'null' when order_number = 1, meaning days_since_prior_order is not applicable (NA). This column will be better represented by integers.
+
+JOINING TABLES (UNION)
+--Order_Products_Prior and Order_Products_Train--
+* These tables have the same attributes. After checking documentation on the dataset, we found that merging these two tables without accounting which evaluation set each record was taken from would fit best for our purposes. 
+
+
+PRIMARY KEYS
+--Order_Products--
+* All tables in our dataset had valid primary keys with the exception of the Order_Products_Prior and Order_Products_Train tables, which are now merged into 'Order_Products' table. The queries written show that making a composite key out of order_id and product_id is valid in the newly merged table.
+
+
+USEFUL TRANSFORMS
+--Order_Products--
+* aggregating ‘add_to_cart_order' of each product and how many orders include this product (creates new table)
+
+NOT NEEDED but TO PRACTICE TRANSFORMS 
+--Orders--
+* change integers in "order_dow" to match the literal day of the week (type: string)
