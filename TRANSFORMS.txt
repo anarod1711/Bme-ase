@@ -27,6 +27,14 @@ USEFUL TRANSFORMS
 --Order_Products--
 * aggregating ‘add_to_cart_order' of each product and how many orders include this product (creates new table)
 
+--Food_Market--
+*used Beam to perform linear regression on the prices for items from USDA data to estimate the 2017 cost of food items to use in instacart analysis
+*created Food_Market_Beam_DF, which includes a price element that details 2017 estimated price by food_id
+
+--Food_Map_Beam_DF--
+*Used Beam to match product_id from instacart data to food_id from USDA dataset
+
+
 NOT NEEDED but TO PRACTICE TRANSFORMS 
 --Orders--
 * change integers in "order_dow" to match the literal day of the week (type: string)
