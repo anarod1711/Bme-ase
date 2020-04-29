@@ -494,7 +494,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 27,
+   "execution_count": 9,
    "metadata": {},
    "outputs": [
     {
@@ -531,7 +531,7 @@
        "Index: []"
       ]
      },
-     "execution_count": 27,
+     "execution_count": 9,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -546,7 +546,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 28,
+   "execution_count": 10,
    "metadata": {},
    "outputs": [
     {
@@ -583,7 +583,7 @@
        "Index: []"
       ]
      },
-     "execution_count": 28,
+     "execution_count": 10,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -591,12 +591,12 @@
    "source": [
     "%%bigquery\n",
     "INSERT INTO instacart_modeled.Week_Days(day_id, day_name)\n",
-    "VALUES (6, 'Sunday')"
+    "VALUES (0, 'Sunday')"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 29,
+   "execution_count": 11,
    "metadata": {},
    "outputs": [
     {
@@ -633,7 +633,7 @@
        "Index: []"
       ]
      },
-     "execution_count": 29,
+     "execution_count": 11,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -641,12 +641,12 @@
    "source": [
     "%%bigquery\n",
     "INSERT INTO instacart_modeled.Week_Days(day_id, day_name)\n",
-    "VALUES (0, 'Monday')"
+    "VALUES (1, 'Monday')"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 30,
+   "execution_count": 12,
    "metadata": {},
    "outputs": [
     {
@@ -683,7 +683,7 @@
        "Index: []"
       ]
      },
-     "execution_count": 30,
+     "execution_count": 12,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -691,12 +691,12 @@
    "source": [
     "%%bigquery\n",
     "INSERT INTO instacart_modeled.Week_Days(day_id, day_name)\n",
-    "VALUES (1, 'Tuesday')"
+    "VALUES (2, 'Tuesday')"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 31,
+   "execution_count": 13,
    "metadata": {},
    "outputs": [
     {
@@ -733,7 +733,7 @@
        "Index: []"
       ]
      },
-     "execution_count": 31,
+     "execution_count": 13,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -741,12 +741,12 @@
    "source": [
     "%%bigquery\n",
     "INSERT INTO instacart_modeled.Week_Days(day_id, day_name)\n",
-    "VALUES (2, 'Wednesday')"
+    "VALUES (3, 'Wednesday')"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 32,
+   "execution_count": 14,
    "metadata": {},
    "outputs": [
     {
@@ -783,7 +783,7 @@
        "Index: []"
       ]
      },
-     "execution_count": 32,
+     "execution_count": 14,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -791,12 +791,12 @@
    "source": [
     "%%bigquery\n",
     "INSERT INTO instacart_modeled.Week_Days(day_id, day_name)\n",
-    "VALUES (3, 'Thursday')"
+    "VALUES (4, 'Thursday')"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 33,
+   "execution_count": 15,
    "metadata": {},
    "outputs": [
     {
@@ -833,7 +833,7 @@
        "Index: []"
       ]
      },
-     "execution_count": 33,
+     "execution_count": 15,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -841,12 +841,12 @@
    "source": [
     "%%bigquery\n",
     "INSERT INTO instacart_modeled.Week_Days(day_id, day_name)\n",
-    "VALUES (4, 'Friday')"
+    "VALUES (5, 'Friday')"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 34,
+   "execution_count": 17,
    "metadata": {},
    "outputs": [
     {
@@ -883,7 +883,7 @@
        "Index: []"
       ]
      },
-     "execution_count": 34,
+     "execution_count": 17,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -891,12 +891,12 @@
    "source": [
     "%%bigquery\n",
     "INSERT INTO instacart_modeled.Week_Days(day_id, day_name)\n",
-    "VALUES (5, 'Saturday')"
+    "VALUES (6, 'Saturday')"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 35,
+   "execution_count": 19,
    "metadata": {},
    "outputs": [
     {
@@ -928,37 +928,37 @@
        "    <tr>\n",
        "      <th>0</th>\n",
        "      <td>0</td>\n",
-       "      <td>Monday</td>\n",
+       "      <td>Sunday</td>\n",
        "    </tr>\n",
        "    <tr>\n",
        "      <th>1</th>\n",
        "      <td>1</td>\n",
-       "      <td>Tuesday</td>\n",
+       "      <td>Monday</td>\n",
        "    </tr>\n",
        "    <tr>\n",
        "      <th>2</th>\n",
        "      <td>2</td>\n",
-       "      <td>Wednesday</td>\n",
+       "      <td>Tuesday</td>\n",
        "    </tr>\n",
        "    <tr>\n",
        "      <th>3</th>\n",
        "      <td>3</td>\n",
-       "      <td>Thursday</td>\n",
+       "      <td>Wednesday</td>\n",
        "    </tr>\n",
        "    <tr>\n",
        "      <th>4</th>\n",
        "      <td>4</td>\n",
-       "      <td>Friday</td>\n",
+       "      <td>Thursday</td>\n",
        "    </tr>\n",
        "    <tr>\n",
        "      <th>5</th>\n",
        "      <td>5</td>\n",
-       "      <td>Saturday</td>\n",
+       "      <td>Friday</td>\n",
        "    </tr>\n",
        "    <tr>\n",
        "      <th>6</th>\n",
        "      <td>6</td>\n",
-       "      <td>Sunday</td>\n",
+       "      <td>Saturday</td>\n",
        "    </tr>\n",
        "  </tbody>\n",
        "</table>\n",
@@ -966,16 +966,16 @@
       ],
       "text/plain": [
        "   day_id   day_name\n",
-       "0       0     Monday\n",
-       "1       1    Tuesday\n",
-       "2       2  Wednesday\n",
-       "3       3   Thursday\n",
-       "4       4     Friday\n",
-       "5       5   Saturday\n",
-       "6       6     Sunday"
+       "0       0     Sunday\n",
+       "1       1     Monday\n",
+       "2       2    Tuesday\n",
+       "3       3  Wednesday\n",
+       "4       4   Thursday\n",
+       "5       5     Friday\n",
+       "6       6   Saturday"
       ]
      },
-     "execution_count": 35,
+     "execution_count": 19,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -1554,7 +1554,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 36,
+   "execution_count": 20,
    "metadata": {},
    "outputs": [
     {
@@ -1595,7 +1595,7 @@
        "0    7"
       ]
      },
-     "execution_count": 36,
+     "execution_count": 20,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -1607,7 +1607,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 37,
+   "execution_count": 21,
    "metadata": {},
    "outputs": [
     {
@@ -1648,7 +1648,7 @@
        "0    7"
       ]
      },
-     "execution_count": 37,
+     "execution_count": 21,
      "metadata": {},
      "output_type": "execute_result"
     }
