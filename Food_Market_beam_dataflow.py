@@ -12,56 +12,45 @@ class FoodPricesFn(beam.DoFn):
     # get necessary fields from record
         price_record = element
         food_id = price_record.get('food_id')
-        market_id = price_record.get('market_id')
         year = price_record.get('year')
-        avg_price = price_record.get('average_price')
+        avg_price = price_record.get('avg_price')
         
         #generate key value pairs
-        food_market_tuple = (food_id, market_id) #key=price unique to market and food id
         year_price_tuple = (year, avg_price) # value=yearly prices
-        food_price_tuple = (food_market_tuple, year_price_tuple) 
+        food_price_tuple = (food_id, year_price_tuple) 
         return [food_price_tuple]
 
 # predict 2017 price using linear regression
 class LinearRegFn(beam.DoFn):
     def process(self,element):
-        f_m_id, price_obj = element # product_obj is an _UnwindowedValues type
+        food_id, price_obj = element # product_obj is an _UnwindowedValues type
         price_list = list(price_obj) # item format :tuple (year=x, price=y)
         
         xs = [] # year
         ys = [] # price
         
         # get x and y values
-        for y_price in price_list:
-            xs.append(y_price[0]) 
-            ys.append(y_price[1])
+        for yr_price in price_list:
+            xs.append(yr_price[0]) 
+            ys.append(yr_price[1])
         
         # least squares fit for y=mx+b over all points
         # src: https://beam.apache.org/releases/pydoc/2.9.0/_modules/apache_beam/transforms/util.html
-        
-        print(ys)
         n = float(len(xs))
         xbar = sum(xs) / n
         ybar = sum(ys) / n
-        num = sum([(x - xbar) * (y - ybar) for x, y in zip(xs, ys)])
-        den = sum([(x - xbar)**2 for x in xs])
+        m = sum([(x - xbar) * (y - ybar) for x, y in zip(xs, ys)]) / sum([(x - xbar)**2 for x in xs])
+        b = ybar - m * xbar
         
-        if (den != 0):
-            m = num / den
-            b = ybar - m * xbar
-            
-            # calculate 2017 price
-            year = 2017
-            price = m * year + b
+        # calculate 2017 price
+        year = 2017
+        price = m * year + b
         
-        else:
-            price = 1000
-
         # create food price record
         food_record = {
-            "food_id" : f_m_id[0],
-            "market_id" : f_m_id[1],
-            "price" : price
+            "food_id" : food_id,
+            "year" : year,
+            "avg_price" : price
         }
         return [food_record]
     
@@ -86,39 +75,47 @@ def run():
     # Create beam pipeline using local runner
     p = beam.Pipeline('DataflowRunner', options=opts)
     
-    # get average price per year for each food
-    sql = 'SELECT food_id, year, market_id, AVG(price) as average_price FROM USDA_ERS_modeled.Food_Market WHERE price IS NOT NULL and year IS NOT NULL GROUP BY food_id, year, market_id ORDER BY food_id, year ASC'    
+     # get average price per year for each food
+    sql = 'SELECT food_id, year, AVG(price) as avg_price FROM USDA_ERS_modeled.Food_Market WHERE price IS NOT NULL and year IS NOT NULL GROUP BY food_id, year ORDER BY food_id'
+    
     bq_source = beam.io.BigQuerySource(query=sql, use_standard_sql=True)
 
     query_results = p | 'Read from BigQuery' >> beam.io.Read(bq_source)
+    
      # write PCollection to input file
-    query_results | 'Write to input.txt' >> WriteToText(DIR_PATH + 'input.txt')
+    query_results | 'Write to input.txt' >> WriteToText('input.txt')
 
      # apply ParDo to format the key, value pairs
-     # key is the food_id and value is a tuple of year and average price that year
+        # key is the food_id and value is a tuple of year and average price that year
     y_price_pcoll = query_results | 'Food and average price per year pairs' >> beam.ParDo(FoodPricesFn())
         
      # write PCollection to output file
-    y_price_pcoll | 'Write to output.txt' >> WriteToText(DIR_PATH + 'output.txt')
+    y_price_pcoll | 'Write to output.txt' >> WriteToText('output.txt')
         
      # group yearly prices by food_id
     grouped_food_yprices_pcoll =  y_price_pcoll | 'Group by food_id' >> beam.GroupByKey()
     
      # write PCollection to log file
-    grouped_food_yprices_pcoll | 'Write log 3' >> WriteToText(DIR_PATH + 'grouped_food_yprices_pcoll.txt')
+    grouped_food_yprices_pcoll | 'Write log 3' >> WriteToText('grouped_food_yprices_pcoll.txt')
     
     # predict 2017 price using linear regression
     food_2017_prices_pcoll = grouped_food_yprices_pcoll | 'Predict 2017 prices' >> beam.ParDo(LinearRegFn())
     
     # write PCollection to log file
-    food_2017_prices_pcoll | 'Write log 4' >> WriteToText(DIR_PATH + 'food_2017_prices_pcoll.txt')
+    food_2017_prices_pcoll | 'Write log 4' >> WriteToText('food_2017_prices_pcoll.txt')
+    
+    # merge average yearly prices
+    food_yr_price = (food_2017_prices_pcoll, query_results) | 'Merge PCollections' >> beam.Flatten()
+    
+    # write PCollection to log file
+    food_yr_price | 'Write Merged Collections' >> WriteToText('merged.txt')
 
     dataset_id = 'USDA_ERS_modeled'
-    table_id = 'Food_Market_Beam_0DF'
-    schema_id = 'food_id:INTEGER,market_id:INTEGER,price:float'
+    table_id = 'Food_Market_Beam_DF'
+    schema_id = 'food_id:INTEGER,year:INTEGER,avg_price:FLOAT'
 
      # write PCollection to new BQ table
-    food_2017_prices_pcoll | 'Write BQ table' >> beam.io.WriteToBigQuery(dataset=dataset_id, 
+    food_yr_price | 'Write BQ table' >> beam.io.WriteToBigQuery(dataset=dataset_id, 
                                                   table=table_id, 
                                                   schema=schema_id,
                                                   project=PROJECT_ID,
@@ -127,8 +124,7 @@ def run():
                                                   batch_size=int(100))
      
     result = p.run()
-    result.wait_until_finish()      
-
+    result.wait_until_finish()  
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.INFO)

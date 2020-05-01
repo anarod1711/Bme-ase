@@ -12,24 +12,17 @@ class OrdersThatIncludeFn(beam.DoFn):
     # get necessary fields from record
         order_record = element
         prod_id = order_record.get('product_id')
-        prod_count = order_record.get('total')
-    
-        product_tuple = (prod_id,prod_count)
+        product_tuple = (prod_id, 1)
         return [product_tuple]
 
 class OrderTotalCalculationsFn(beam.DoFn):
     def process(self,element):
         product_id, product_obj = element # product_obj is an _UnwindowedValues type
-        total = 0
-        freq = 0
         product_list = list(product_obj)
-        for product_inst in product_list:
-            freq += 1
-            total += product_inst
+        freq=len(product_list)
             
         product_record = {
             "product_id" : product_id,
-            "total" : total,
             "frequency" : freq
         }
         return [product_record]
@@ -47,7 +40,7 @@ def run():
     # Create beam pipeline using local runner
     p = beam.Pipeline('DirectRunner', options=opts)
         
-    sql = 'SELECT product_id, add_to_cart_order as total FROM instacart_modeled.Order_Products limit 100'    
+    sql = 'SELECT product_id FROM instacart_modeled.Order_Products limit 100'    
     bq_source = beam.io.BigQuerySource(query=sql, use_standard_sql=True)
 
     query_results = p | 'Read from BigQuery' >> beam.io.Read(bq_source)
@@ -74,7 +67,7 @@ def run():
 
     dataset_id = 'instacart_modeled'
     table_id = 'Order_Products_Beam'
-    schema_id = 'product_id:INTEGER,total:INTEGER,frequency:INTEGER'
+    schema_id = 'product_id:INTEGER,frequency:INTEGER'
 
      # write PCollection to new BQ table
     distinct_orders_pcoll | 'Write BQ table' >> beam.io.WriteToBigQuery(dataset=dataset_id, 

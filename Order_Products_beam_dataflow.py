@@ -12,25 +12,17 @@ class OrdersThatIncludeFn(beam.DoFn):
     # get necessary fields from record
         order_record = element
         prod_id = order_record.get('product_id')
-        prod_count = order_record.get('total')
-       # print('current product_id: ' + str(prod_id))
-    
-        product_tuple = (prod_id,prod_count)
+        product_tuple = (prod_id, 1)
         return [product_tuple]
 
 class OrderTotalCalculationsFn(beam.DoFn):
     def process(self,element):
         product_id, product_obj = element # product_obj is an _UnwindowedValues type
-        total = 0
-        freq = 0
         product_list = list(product_obj)
-        for product_inst in product_list:
-            freq += 1
-            total += product_inst
+        freq=len(product_list)
             
         product_record = {
             "product_id" : product_id,
-            "total" : total,
             "frequency" : freq
         }
         return [product_record]
@@ -39,22 +31,24 @@ def run():
     PROJECT_ID = 'responsive-cab-267123' # change to your project id
     BUCKET = 'gs://bmease_cs327e' # change to your bucket name
     DIR_PATH = BUCKET + '/output/' + datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S') + '/'
-        # Create and set your PipelineOptions.
-    options = PipelineOptions(flags=None)
 
-    # For Dataflow execution, set the project, job_name,
-    # staging location, temp_location and specify DataflowRunner.
-    google_cloud_options = options.view_as(GoogleCloudOptions)
-    google_cloud_options.project = PROJECT_ID
-    google_cloud_options.job_name = 'orders-df1'
-    google_cloud_options.staging_location = BUCKET + '/staging'
-    google_cloud_options.temp_location = BUCKET + '/temp'
-    options.view_as(StandardOptions).runner = 'DataflowRunner'
+    # run pipeline on Dataflow 
+    options = {
+        'runner': 'DataflowRunner',
+        'job_name': 'orders-df1',
+        'project': PROJECT_ID,
+        'temp_location': BUCKET + '/temp',
+        'staging_location': BUCKET + '/staging',
+        'machine_type': 'n1-standard-4', # https://cloud.google.com/compute/docs/machine-types
+        'num_workers': 1
+    }
 
-     # Create beam pipeline using local runner
-    p = beam.Pipeline(options=options)
+    opts = beam.pipeline.PipelineOptions(flags=[], **options)
+
+    # Create beam pipeline using local runner
+    p = beam.Pipeline('DataflowRunner', options=opts)
     
-    sql = 'SELECT product_id, add_to_cart_order as total FROM instacart_modeled.Order_Products'    
+    sql = 'SELECT product_id FROM instacart_modeled.Order_Products'    
     bq_source = beam.io.BigQuerySource(query=sql, use_standard_sql=True)
 
     query_results = p | 'Read from BigQuery' >> beam.io.Read(bq_source)
@@ -81,7 +75,7 @@ def run():
 
     dataset_id = 'instacart_modeled'
     table_id = 'Order_Products_Beam_DF'
-    schema_id = 'product_id:INTEGER,total:INTEGER,frequency:INTEGER'
+    schema_id = 'product_id:INTEGER,frequency:INTEGER'
 
      # write PCollection to new BQ table
     distinct_orders_pcoll | 'Write BQ table' >> beam.io.WriteToBigQuery(dataset=dataset_id, 
@@ -93,7 +87,7 @@ def run():
                                                   batch_size=int(100))
      
     result = p.run()
-    result.wait_until_finish()      
+    result.wait_until_finish()    
 
 
 if __name__ == '__main__':
