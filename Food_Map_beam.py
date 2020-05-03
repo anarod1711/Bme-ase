@@ -41,29 +41,54 @@ def veg_check(product, type_v):
 # find the USDA food item that best matches the product
 class MatchProductFn(beam.DoFn):  
     def process(self,element):
-        food_id_map = {8: 47, 43: 47, 93: 47, 112: 19, 128: 19, 26: 54, 31: 41, 64: 41, 77: 41, 90: 42, 94: 54, 98: 3, 115: 53, 48: 46, 57: 20, 121: 20, 130: 45, 18: 14, 68: 19, 59: 49, 69: 49, 81: 13, 95: 30, 99: 2, 2: 26, 21: 26, 36: 38, 53: 27, 71: 27, 84: 25, 86: 37, 91: 27, 108: 27, 120: 27, 1: 52, 13: 52, 14: 0, 67: 52, 96: 52, 4: 19, 9: 7, 12: 19, 63: 19, 131: 19, 34: 33, 37: 44, 38: 48, 42: 48, 52: 48, 58: 45, 79: 48, 113: 3, 116: 1, 119: 44, 129: 48, 30: 0, 33: 0, 66: 0, 76: 0, 7: 29, 15: 33, 35: 31, 39: 33, 49: 31, 106: 29, 122: 29, 100: 0, 6: 0, 5: 38, 17: 45, 19: 38, 29: 40, 51: 52, 72: 0, 88: 36, 89: 38, 97: 0, 104: 0, 105: 45, 110: 13, 16: 1, 24: 1, 32: 1, 83: 1, 123: 1, 3: 50, 23: 50, 45: 46, 46: 46, 50: 1, 61: 46, 78: 50, 103: 46, 107: 50, 117: 35, 125: 50}
+        # food_aisle assignments
+        food_id_map = {
+            8: 47, 43: 47, 93: 47, 112: 19, 128: 19, 26: 54, 31: 41, 
+            64: 41, 77: 41, 90: 42, 94: 54, 98: 3, 115: 53, 48: 46, 
+            57: 20, 121: 20, 130: 45, 18: 14, 68: 19, 59: 49, 69: 49, 
+            81: 13, 95: 30, 99: 2, 2: 26, 21: 26, 36: 38, 53: 27, 71: 
+            27, 84: 25, 86: 37, 91: 27, 108: 27, 120: 27, 1: 52, 13: 52, 
+            14: 0, 67: 52, 96: 52, 4: 19, 9: 7, 12: 19, 63: 19, 131: 19, 
+            34: 33, 37: 44, 38: 48, 42: 48, 52: 48, 58: 45, 79: 48, 113: 3,
+            116: 1, 119: 44, 129: 48, 30: 0, 33: 0, 66: 0, 76: 0, 7: 29, 
+            15: 33, 35: 31, 39: 33, 49: 31, 106: 29, 122: 29, 100: 0, 6: 0, 
+            5: 38, 17: 45, 19: 38, 29: 40, 51: 52, 72: 0, 88: 36, 89: 38, 
+            97: 0, 104: 0, 105: 45, 110: 13, 16: 1, 24: 1, 32: 1, 83: 1, 
+            123: 1, 3: 50, 23: 50, 45: 46, 46: 46, 50: 1, 61: 46, 78: 50, 
+            103: 46, 107: 50, 117: 35, 125: 50,
+            27: -1,28: -1,62: -1,124: -1,134: -1,
+            92: -2,47: -2,65: -2,70: -2,
+            40: -3,41: -3}
         green_veggies = {'arugula (rocket)', 'bok choy', 'broccoli', 'broccoli rabe (rapini)', 'broccolini', 'collard greens', 'leafy lettuce', 'endive', 'escarole', 'kale',
-                         'mesclun', 'mixed greens', 'mustard greens', 'romaine lettuce', 'spinach', 'Swiss chard', 'turnip greens', 'watercress'}
-        
+                         'mesclun', 'mixed greens', 'mustard greens', 'romaine lettuce', 'spinach', 'Swiss chard', 'turnip greens', 'watercress'} 
         orange_veggies = {'acorn squash', 'bell peppers', 'butternut squash', 'carrots', 'hubbard squash', 'pumpkin', 'red chili peppers', 'sweet red peppers', 'sweet potatoes',
                           'tomatoes', '100% vegetable juice'}
-        
         starchy_veggies = {'cassava', ' corn', ' green bananas', 'green lima beans', 'green peas', 'parsnips', 'plantains', 'potatoes white', 'taro', 'water chestnuts', 'yams'}
+        
         product_record = element
         product_name = product_record.get('product_name')
         product_id = product_record.get('product_id')
         aisle_id = product_record.get('aisle_id')
-        done = False
+        
         if aisle_id not in food_id_map.keys():
             aisle_id = 24
         
         food_id = food_id_map[aisle_id]
-        
+        done = False
         if food_id == 0:
             food_id = 1
-
+        
+        elif food_id == -1:
+            food_id = 42
+        
+        elif food_id == -2:
+            food_id = 11
+        
+        elif food_id == -3:
+            food_id = 32
+            
         #whole grain vs not
-        if food_id == 20:
+        elif food_id == 20:
             if 'whole' in product_name or 'grain' in product_name:
                 food_id = 16
                 
@@ -135,8 +160,10 @@ def run():
     # Create beam pipeline using local runner
     p = beam.Pipeline('DirectRunner', options=opts)
     
-    # get average price per year for each food
-    sql = "select lower(product_name) as product_name, product_id, a.aisle_id, department from instacart_modeled.Products p inner join instacart_modeled.Departments d on d.department_id = p.department_id inner join instacart_modeled.Aisles a on a.aisle_id = p.aisle_id where d.department_id not in (5,8,11,17,18) and p.product_name not like '%Filters%' order by product_name limit 100"  
+    #old
+#     sql = "select lower(product_name) as product_name, product_id, a.aisle_id, department from instacart_modeled.Products p inner join instacart_modeled.Departments d on d.department_id = p.department_id inner join instacart_modeled.Aisles a on a.aisle_id = p.aisle_id where d.department_id not in (5,8,11,17,18) and p.product_name not like '%Filters%' order by product_name limit 100"
+
+    sql = "SELECT LOWER(product_name) AS product_name, product_id,p.aisle_id FROM instacart_modeled.Products p WHERE p.product_name NOT LIKE '%Filters%' AND p.aisle_id NOT IN (11,20,22,25,44,55,73,80,109,118,126,127,132,133,10,54,60,74,75,85,87,101,111,114,56,82,102) LIMIT 100"  
     bq_source = beam.io.BigQuerySource(query=sql, use_standard_sql=True)
 
     query_results = p | 'Read from BigQuery' >> beam.io.Read(bq_source)
